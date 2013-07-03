@@ -1,4 +1,4 @@
 bedazzled
 =========
 
-Useful graphs for building metrics
+Useful graphs for building metrics.
