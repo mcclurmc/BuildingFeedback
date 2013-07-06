@@ -1,39 +1,3 @@
-var components = { 
-    "name": "chilled beams",
-    "children":
-    [ { "name": "crossed CHW",
-	"children": [ { "name": "construction quality", "size": 16} ] },
-      { "name": "unrealistic expectations cooling",
-	"children": [ { "name": "client brief", "size": 1.333333333},
-		      { "name": "training", "size": 1.333333333},
-		      { "name": "clent decision", "size": 1.333333333} ] },
-      { "name": "dewpoint tracking",
-	"children": [ { "name": "system design", "size": 16 } ] },
-      { "name": "dewpoint sensor function",
-	"children": [ { "name": "construction quality", "size": 16 } ] },
-      { "name": "failed dewpoint sensors",
-	"children": [ { "name": "component failure", "size": 16 } ] },
-      { "name": "users and controls",
-	"children": [ { "name": "brief", "size": 1.333333333 },
-		      { "name": "system design", "size": 1.333333333 },
-		      { "name": "training", "size": 1.333333333 } ] },
-      { "name": "open windows condensation",
-	"children": [ { "name": "brief", "size": 5.333333333 },
-		      { "name": "system design", "size": 5.333333333 },
-		      { "name": "training", "size": 5.333333333 } ] },
-      { "name": "computer overheating",
-	"children": [ { "name": "brief", "size": 1.333333333 },
-		      { "name": "system design", "size": 1.333333333 },
-		      { "name": "training", "size": 1.333333333 } ] },
-      { "name": "night cooling reduction",
-	"children": [ { "name": "commissioning", "size": 4 } ] },
-      { "name": "weather station",
-	"children": [ { "name": "client brief", "size": 5.333333333 },
-		      { "name": "system design", "size": 5.333333333 },
-		      { "name": "value engineering", "size": 5.333333333 } ] }
-    ]
-}
-
 var width = 960;
 var height = 600;
 var radius = Math.min(width, height) / 2 - 20;
@@ -48,7 +12,7 @@ var svg = d3.select("body").append("svg")
 var partition = d3.layout.partition()
     .sort(null)
     .size([2 * Math.PI, radius * radius])
-    .value(function(d) { return 1; });
+    .value(function(d) { return d.size; }); // was return 1;
 
 var arc = d3.svg.arc()
     .startAngle(function(d) { return d.x; })
@@ -56,8 +20,7 @@ var arc = d3.svg.arc()
     .innerRadius(function(d) { return Math.sqrt(d.y); })
     .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-//d3.json("components.json", function(error, root) {
-function doit(root) {
+d3.json("data/components.json", function(error, root) {
     var path = svg.datum(root).selectAll("path")
 	.data(partition.nodes)
 	.enter().append("path")
@@ -66,6 +29,8 @@ function doit(root) {
 	.style("stroke", "#fff")
 	.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
 	.style("fill-rule", "evenodd")
+        .append("title")
+        .text(function(d) { return d.name; })
 	.each(stash);
 
     d3.selectAll("input").on("change", function change() {
@@ -79,9 +44,7 @@ function doit(root) {
             .duration(1500)
             .attrTween("d", arcTween);
     });
-};
-
-doit(components)
+});
 
 // Stash the old values for transition.
 function stash(d) {
