@@ -1,186 +1,202 @@
-var svg = {};
+function diagrams() {
 
-d3.csv("data/components.csv", function(data) {
-    var component_matrix = []
-    var labels = []
+    var svg = {};
 
-    // extract labels from csv
-    for (var l in data[0]) {
-	labels.push(l);
+    this.init = init;
+
+    // this.do_chord = do_chord;
+    // this.do_component = do_component;
+
+    // initialise svg with chord diagram
+    function init() {
+	d3.csv("data/components.csv", function(data) {
+	    var component_matrix = []
+	    var labels = []
+
+	    // extract labels from csv
+	    for (var l in data[0]) {
+		labels.push(l);
+	    }
+
+	    // parse component matrix
+	    component_matrix = data.map(function(d) {
+		var array = [];
+		for (var e in d) {
+		    array.push(parseInt(d[e]));
+		}
+		return array;
+	    })
+
+	    // Draw the chord diagram after parsing data
+	    do_chord(component_matrix, labels);
+	});
     }
 
-    // parse component matrix
-    component_matrix = data.map(function(d) {
-	var array = [];
-	for (var e in d) {
-	    array.push(parseInt(d[e]));
-	}
-	return array;
-    })
+    function do_chord(component_matrix, labels) {
 
-    // Draw the chord diagram after parsing data
-    do_chord(component_matrix, labels);
-});
+	var chord = d3.layout.chord()
+	    .padding(.05)
+	    .sortSubgroups(d3.descending)
+	    .matrix(component_matrix);
 
-function do_chord(component_matrix, labels) {
+	var width = 1200;
+	var height = 900;
+	var innerRadius = Math.min(width, height) * .25;
+	var outerRadius = innerRadius * 1.1;
 
-    var chord = d3.layout.chord()
-	.padding(.05)
-	.sortSubgroups(d3.descending)
-	.matrix(component_matrix);
+	var fill = d3.scale.category20()
 
-    var width = 1200;
-    var height = 900;
-    var innerRadius = Math.min(width, height) * .25;
-    var outerRadius = innerRadius * 1.1;
+	svg = d3.select("body").append("svg")
+	    .attr("width", width)
+	    .attr("height", height)
+	    .append("g")
+	    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    var fill = d3.scale.category20()
-
-    svg = d3.select("body").append("svg")
-	.attr("width", width)
-	.attr("height", height)
-	.append("g")
-	.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-    svg.append("g").selectAll("path")
-	.data(chord.groups)
-	.enter().append("path")
-	.style("fill", function(d) { return fill(d.index); })
-	.style("stroke", function(d) { return fill(d.index); })
-	.attr("d", d3.svg.arc().innerRadius(innerRadius)
-              .outerRadius(outerRadius))
-	.on("mouseover", fade(.1))
-	.on("mouseout", fade(1))
-	.on("click", function() { window.alert("do transition!");});
-
-    var ticks = svg.append("g").selectAll("g")
-	.data(chord.groups)
-	.enter().append("g").selectAll("g")
-	.data(groupTicks(labels))
-	.enter().append("g")
-	.attr("transform", function(d) {
-            return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
-		+ "translate(" + outerRadius + ",0)";
-	});
-
-    ticks.append("line")
-	.attr("x1", 1)
-	.attr("y1", 0)
-	.attr("x2", 5)
-	.attr("y2", 0)
-	.style("stroke", "#000");
-
-    ticks.append("text")
-	.attr("x", 8)
-	.attr("dy", ".35em")
-	.attr("transform", function(d) {
-	    return d.angle > Math.PI ? "rotate(180)translate(-16)" : null;
-	})
-	.style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
-	.text(function(d) { return d.label; });
-
-    svg.append("g")
-	.attr("class", "chord")
-	.selectAll("path")
-	.data(chord.chords)
-	.enter().append("path")
-	.attr("d", d3.svg.chord().radius(innerRadius))
-	.style("fill", function(d) { return fill(d.target.index); })
-	.style("opacity", 1);
-}
-
-// Returns an event handler for fading a given chord group.
-function fade(opacity) {
-    return function(g, i) {
-        svg.selectAll(".chord path")
-	    .filter(function(d) { return d.source.index != i && d.target.index != i; })
-	    .transition()
-	    .style("opacity", opacity);
-    };
-}
-
-// Returns an array of tick angles and labels, given a group.
-function groupTicks(labels) {
-    return function(d) {
-	var k = (d.endAngle - d.startAngle)
-	return [ {
-	    angle: k * .5 + d.startAngle,
-	    label: labels[d.index]
-	} ] ;
-    };
-}
-
-function do_component() {
-    var width = 960;
-    var height = 600;
-    var radius = Math.min(width, height) / 2 - 20;
-    var color = d3.scale.category20c();
-
-    var svg = d3.select("body").append("svg")
-	.attr("width", width)
-	.attr("height", height)
-	.append("g")
-	.attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
-
-    var partition = d3.layout.partition()
-	.sort(null)
-	.size([2 * Math.PI, radius * radius])
-	.value(function(d) { return d.size; }); // was return 1;
-
-    var arc = d3.svg.arc()
-	.startAngle(function(d) { return d.x; })
-	.endAngle(function(d) { return d.x + d.dx; })
-	.innerRadius(function(d) { return Math.sqrt(d.y); })
-	.outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
-
-    d3.json("data/components.json", function(error, root) {
-	// Show name in middle of sunburst. We could make this look better.
-	svg.append("text")
-	    .attr("text-anchor", "middle")
-	    .text(function(d){ return root.name; });
-
-	var path = svg.datum(root).selectAll("path")
-	    .data(partition.nodes)
+	svg.append("g").selectAll("path")
+	    .data(chord.groups)
 	    .enter().append("path")
-	    .attr("display", function(d) {
-		return d.depth ? null : "none"; }) // hide inner ring
-	    .attr("d", arc)
-	    .style("stroke", "#fff")
-	    .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-	    .style("fill-rule", "evenodd")
-            .append("title")
-            .text(function(d) { return d.name; })
-	    .each(stash);
+	    .style("fill", function(d) { return fill(d.index); })
+	    .style("stroke", function(d) { return fill(d.index); })
+	    .attr("d", d3.svg.arc().innerRadius(innerRadius)
+		  .outerRadius(outerRadius))
+	    .on("mouseover", fade(.1))
+	    .on("mouseout", fade(1))
+	    .on("click", function() { window.alert("do transition!");});
 
-	d3.selectAll("input").on("change", function change() {
-	    var value = this.value === "count"
-		? function() { return 1; }
-            : function(d) { return d.size; };
+	var ticks = svg.append("g").selectAll("g")
+	    .data(chord.groups)
+	    .enter().append("g").selectAll("g")
+	    .data(groupTicks(labels))
+	    .enter().append("g")
+	    .attr("transform", function(d) {
+		return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+		    + "translate(" + outerRadius + ",0)";
+	    });
 
-	    path
-		.data(partition.value(value).nodes)
-		.transition()
-		.duration(1500)
-		.attrTween("d", arcTween);
-	});
-    });
+	ticks.append("line")
+	    .attr("x1", 1)
+	    .attr("y1", 0)
+	    .attr("x2", 5)
+	    .attr("y2", 0)
+	    .style("stroke", "#000");
 
-    // Stash the old values for transition.
-    function stash(d) {
-	d.x0 = d.x;
-	d.dx0 = d.dx;
+	ticks.append("text")
+	    .attr("x", 8)
+	    .attr("dy", ".35em")
+	    .attr("transform", function(d) {
+		return d.angle > Math.PI ? "rotate(180)translate(-16)" : null;
+	    })
+	    .style("text-anchor", function(d) { return d.angle > Math.PI ? "end" : null; })
+	    .text(function(d) { return d.label; });
+
+	svg.append("g")
+	    .attr("class", "chord")
+	    .selectAll("path")
+	    .data(chord.chords)
+	    .enter().append("path")
+	    .attr("d", d3.svg.chord().radius(innerRadius))
+	    .style("fill", function(d) { return fill(d.target.index); })
+	    .style("opacity", 1);
     }
 
-    // Interpolate the arcs in data space.
-    function arcTween(a) {
-	var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
-	return function(t) {
-	    var b = i(t);
-	    a.x0 = b.x;
-	    a.dx0 = b.dx;
-	    return arc(b);
+    // Returns an event handler for fading a given chord group.
+    function fade(opacity) {
+	return function(g, i) {
+            svg.selectAll(".chord path")
+		.filter(function(d) { return d.source.index != i && d.target.index != i; })
+		.transition()
+		.style("opacity", opacity);
 	};
     }
 
-    d3.select(self.frameElement).style("height", height + "px");
+    // Returns an array of tick angles and labels, given a group.
+    function groupTicks(labels) {
+	return function(d) {
+	    var k = (d.endAngle - d.startAngle)
+	    return [ {
+		angle: k * .5 + d.startAngle,
+		label: labels[d.index]
+	    } ] ;
+	};
+    }
+
+    function do_component() {
+	var width = 960;
+	var height = 600;
+	var radius = Math.min(width, height) / 2 - 20;
+	var color = d3.scale.category20c();
+
+	var svg = d3.select("body").append("svg")
+	    .attr("width", width)
+	    .attr("height", height)
+	    .append("g")
+	    .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
+
+	var partition = d3.layout.partition()
+	    .sort(null)
+	    .size([2 * Math.PI, radius * radius])
+	    .value(function(d) { return d.size; }); // was return 1;
+
+	var arc = d3.svg.arc()
+	    .startAngle(function(d) { return d.x; })
+	    .endAngle(function(d) { return d.x + d.dx; })
+	    .innerRadius(function(d) { return Math.sqrt(d.y); })
+	    .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
+
+	d3.json("data/components.json", function(error, root) {
+	    // Show name in middle of sunburst. We could make this look better.
+	    svg.append("text")
+		.attr("text-anchor", "middle")
+		.text(function(d){ return root.name; });
+
+	    var path = svg.datum(root).selectAll("path")
+		.data(partition.nodes)
+		.enter().append("path")
+		.attr("display", function(d) {
+		    return d.depth ? null : "none"; }) // hide inner ring
+		.attr("d", arc)
+		.style("stroke", "#fff")
+		.style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+		.style("fill-rule", "evenodd")
+		.append("title")
+		.text(function(d) { return d.name; })
+		.each(stash);
+
+	    d3.selectAll("input").on("change", function change() {
+		var value = this.value === "count"
+		    ? function() { return 1; }
+		: function(d) { return d.size; };
+
+		path
+		    .data(partition.value(value).nodes)
+		    .transition()
+		    .duration(1500)
+		    .attrTween("d", arcTween);
+	    });
+	});
+
+	// Stash the old values for transition.
+	function stash(d) {
+	    d.x0 = d.x;
+	    d.dx0 = d.dx;
+	}
+
+	// Interpolate the arcs in data space.
+	function arcTween(a) {
+	    var i = d3.interpolate({x: a.x0, dx: a.dx0}, a);
+	    return function(t) {
+		var b = i(t);
+		a.x0 = b.x;
+		a.dx0 = b.dx;
+		return arc(b);
+	    };
+	}
+
+	d3.select(self.frameElement).style("height", height + "px");
+    }
+
 }
+
+var dia = new diagrams();
+
+dia.init();
