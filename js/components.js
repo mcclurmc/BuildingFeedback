@@ -21,6 +21,11 @@ var arc = d3.svg.arc()
     .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
 d3.json("data/components.json", function(error, root) {
+    // Show name in middle of sunburst. We could make this look better.
+    svg.append("text")
+	.attr("text-anchor", "middle")
+	.text(function(d){ return root.name; });
+
     var path = svg.datum(root).selectAll("path")
 	.data(partition.nodes)
 	.enter().append("path")
