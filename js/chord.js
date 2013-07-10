@@ -1,3 +1,5 @@
+var svg = {};
+
 d3.csv("data/components.csv", function(data) {
     var component_matrix = []
     var labels = []
@@ -34,7 +36,7 @@ function do_chord(component_matrix, labels) {
 
     var fill = d3.scale.category20()
 
-    var svg = d3.select("body").append("svg")
+    svg = d3.select("body").append("svg")
 	.attr("width", width)
 	.attr("height", height)
 	.append("g")
@@ -54,7 +56,7 @@ function do_chord(component_matrix, labels) {
     var ticks = svg.append("g").selectAll("g")
 	.data(chord.groups)
 	.enter().append("g").selectAll("g")
-	.data(groupTicks)
+	.data(groupTicks(labels))
 	.enter().append("g")
 	.attr("transform", function(d) {
             return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
@@ -85,25 +87,27 @@ function do_chord(component_matrix, labels) {
 	.attr("d", d3.svg.chord().radius(innerRadius))
 	.style("fill", function(d) { return fill(d.target.index); })
 	.style("opacity", 1);
+}
 
-    // Returns an array of tick angles and labels, given a group.
-    function groupTicks(d) {
+// Returns an event handler for fading a given chord group.
+function fade(opacity) {
+    return function(g, i) {
+        svg.selectAll(".chord path")
+	    .filter(function(d) { return d.source.index != i && d.target.index != i; })
+	    .transition()
+	    .style("opacity", opacity);
+    };
+}
+
+// Returns an array of tick angles and labels, given a group.
+function groupTicks(labels) {
+    return function(d) {
 	var k = (d.endAngle - d.startAngle)
 	return [ {
-            angle: k * .5 + d.startAngle,
-            label: labels[d.index]
+	    angle: k * .5 + d.startAngle,
+	    label: labels[d.index]
 	} ] ;
-    }
-
-    // Returns an event handler for fading a given chord group.
-    function fade(opacity) {
-	return function(g, i) {
-            svg.selectAll(".chord path")
-		.filter(function(d) { return d.source.index != i && d.target.index != i; })
-		.transition()
-		.style("opacity", opacity);
-	};
-    }
+    };
 }
 
 function do_component() {
@@ -130,6 +134,11 @@ function do_component() {
 	.outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
     d3.json("data/components.json", function(error, root) {
+	// Show name in middle of sunburst. We could make this look better.
+	svg.append("text")
+	    .attr("text-anchor", "middle")
+	    .text(function(d){ return root.name; });
+
 	var path = svg.datum(root).selectAll("path")
 	    .data(partition.nodes)
 	    .enter().append("path")
