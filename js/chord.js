@@ -13,30 +13,27 @@ function diagrams() {
 
     // initialise svg with chord diagram
     function init() {
-	d3.csv("data/components.csv", function(data) {
-	    var component_matrix = []
-	    var labels = []
-
-	    // extract labels from csv
-	    for (var l in data[0]) {
-		labels.push(l);
-	    }
-
-	    // parse component matrix
-	    component_matrix = data.map(function(d) {
-		var array = [];
-		for (var e in d) {
-		    array.push(parseInt(d[e]));
-		}
-		return array;
-	    })
-
-	    // Draw the chord diagram after parsing data
-	    do_chord(component_matrix, labels);
-	});
+	d3.csv("data/components.csv", do_chord);
     }
 
-    function do_chord(component_matrix, labels) {
+    // Draw the chord diagram after parsing data
+    function do_chord(data) {
+	var component_matrix = []
+	var labels = []
+
+	// extract labels from csv
+	for (var l in data[0]) {
+	    labels.push(l);
+	}
+
+	// parse component matrix
+	component_matrix = data.map(function(d) {
+	    var array = [];
+	    for (var e in d) {
+		array.push(parseInt(d[e]));
+	    }
+	    return array;
+	})
 
 	var chord = d3.layout.chord()
 	    .padding(.05)
