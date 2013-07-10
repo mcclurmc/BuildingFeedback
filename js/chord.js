@@ -1,9 +1,13 @@
 function diagrams() {
 
-    var svg = {};
+    //var svg = {};
+    // make this public for now
+    this.svg = {};
 
     this.init = init;
 
+    var width = 1200;
+    var height = 900;
     // this.do_chord = do_chord;
     // this.do_component = do_component;
 
@@ -39,14 +43,15 @@ function diagrams() {
 	    .sortSubgroups(d3.descending)
 	    .matrix(component_matrix);
 
-	var width = 1200;
-	var height = 900;
+	// var width = 1200;
+	// var height = 900;
 	var innerRadius = Math.min(width, height) * .25;
 	var outerRadius = innerRadius * 1.1;
 
 	var fill = d3.scale.category20()
 
-	svg = d3.select("body").append("svg")
+	this.svg = d3.select("body").append("svg")
+	    .attr("class", "all")
 	    .attr("width", width)
 	    .attr("height", height)
 	    .append("g")
@@ -61,7 +66,11 @@ function diagrams() {
 		  .outerRadius(outerRadius))
 	    .on("mouseover", fade(.1))
 	    .on("mouseout", fade(1))
-	    .on("click", function() { window.alert("do transition!");});
+	    .on("click", function() {
+		// Is there a better way to do this than removing svg?
+		$('svg.all').remove();
+		do_component();
+	    });
 
 	var ticks = svg.append("g").selectAll("g")
 	    .data(chord.groups)
@@ -121,16 +130,21 @@ function diagrams() {
     }
 
     function do_component() {
-	var width = 960;
-	var height = 600;
-	var radius = Math.min(width, height) / 2 - 20;
+	// var width = 960;
+	// var height = 600;
+	var radius = Math.min(width, height) / 2 - 150;
 	var color = d3.scale.category20c();
 
-	var svg = d3.select("body").append("svg")
+	svg = d3.select("body").append("svg")
 	    .attr("width", width)
 	    .attr("height", height)
 	    .append("g")
 	    .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
+
+	// svg.attr("width", width)
+	//     .attr("height", height)
+	//     .append("g")
+	//     .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
 
 	var partition = d3.layout.partition()
 	    .sort(null)
