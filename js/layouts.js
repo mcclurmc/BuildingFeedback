@@ -1,4 +1,4 @@
-function diagrams() {
+function layouts() {
 
     //var svg = {};
     // make this public for now
@@ -208,6 +208,6 @@ function diagrams() {
 
 }
 
-var dia = new diagrams();
+var dia = new layouts();
 
 dia.init();
