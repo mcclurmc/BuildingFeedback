@@ -1,27 +1,23 @@
 function layouts() {
 
-    var current = "chord";
-
-    //var svg = {};
-    // make this public for now
-    //this.svg = {};
-
     this.init = init;
+    this.do_chord = do_chord;
+    this.do_component = do_component;
 
     var width = 1200;
     var height = 900;
-    // this.do_chord = do_chord;
-    // this.do_component = do_component;
 
     // initialise svg with chord diagram
     function init() {
 	// Event handlers
-	window.onpopstate = function(event) {
-	    window.alert("back!");
-	    if (layouts.current != "chord") {
-		layouts.init();
+	window.addEventListener("popstate", function(event) {
+	    console.log("** window.onpopstate event handler called: state is " + currentState);
+	    if (currentState != "chord") {
+		console.log("*** switching layout");
+		do_chord();
 	    }
-	};
+	});
+	console.log("** setting window.onpopstate event handler: state is " + layouts.current);
 
 	// Initial layout
 	do_chord();
@@ -29,11 +25,14 @@ function layouts() {
 
     // Draw the chord diagram after parsing data
     function do_chord() {
+	console.log(" * do_chord");
+
 	d3.csv("data/components.csv", function(data) {
+	    console.log(" * do_chord inside csv callback");
 	    var component_matrix = []
 	    var labels = []
 
-	    this.current = "chord";
+	    currentState = "chord";
 
 	    // extract labels from csv
 	    for (var l in data[0]) {
@@ -62,10 +61,9 @@ function layouts() {
 	    var fill = d3.scale.category20()
 
 	    // Is there a better way to do this than removing svg?
-	    $('svg.all').remove();
+	    $('svg').remove();
 
 	    this.svg = d3.select("body").append("svg")
-		.attr("class", "all")
 		.attr("width", width)
 		.attr("height", height)
 		.append("g")
@@ -80,7 +78,11 @@ function layouts() {
 		      .outerRadius(outerRadius))
 		.on("mouseover", fade(.1))
 		.on("mouseout", fade(1))
-		.on("click", function() { do_component(); });
+		.on("click", function() {
+		    console.log("** window.history.pushState()");
+		    window.history.pushState({page: 2}, "Component");
+		    do_component();
+		});
 
 	    var ticks = svg.append("g").selectAll("g")
 		.data(chord.groups)
@@ -119,7 +121,7 @@ function layouts() {
 		.style("opacity", 1);
 	});
     }
-	      
+
 
     // Returns an event handler for fading a given chord group.
     function fade(opacity) {
@@ -143,25 +145,18 @@ function layouts() {
     }
 
     function do_component() {
-	// var width = 960;
-	// var height = 600;
 	var radius = Math.min(width, height) / 2 - 150;
 	var color = d3.scale.category20c();
 
-	this.current = "sunburst";
+	currentState = "sunburst";
 
-	$('svg.all').remove();
+	$('svg').remove();
 
 	svg = d3.select("body").append("svg")
 	    .attr("width", width)
 	    .attr("height", height)
 	    .append("g")
 	    .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
-
-	// svg.attr("width", width)
-	//     .attr("height", height)
-	//     .append("g")
-	//     .attr("transform", "translate(" + width / 2 + "," + height * .52 + ")");
 
 	var partition = d3.layout.partition()
 	    .sort(null)
@@ -178,11 +173,20 @@ function layouts() {
 	    // Show name in middle of sunburst. We could make this look better.
 	    svg.append("text")
 		.attr("text-anchor", "middle")
-		.text(function(d){ return root.name; });
+		.attr("class", "component")
+		.text(function(d){ return root.name; })
+		.on("click", function() {
+		    console.log("** window.history.pushState()");
+		    do_chord();
+		});
 
 	    var path = svg.datum(root).selectAll("path")
 		.data(partition.nodes)
 		.enter().append("path")
+		.on("click", function() {
+		    console.log("** window.history.pushState()");
+		    do_chord();
+		})
 		.attr("display", function(d) {
 		    return d.depth ? null : "none"; }) // hide inner ring
 		.attr("d", arc)
@@ -229,7 +233,6 @@ function layouts() {
 
 }
 
-var layouts = new layouts();
+var l = new layouts();
 
-layouts.init();
-
+l.init();
