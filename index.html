@@ -2,18 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bedazzled: Building analysis tool</title>
+    <title>Building analysis tool</title>
+
+    <script type="text/javascript" src="js/d3.v3.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.2.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="css/chord.css" />
   </head>
 
   <body>
-    <h1>Bedazzled: Building analysis tool</h1>
 
-    <p>
-      <ul>
-	<li><a href="chord.html">Chord Diagram</a></li>
-	<li><a href="components.html">Sunburst Component Diagram</a></li>
-      </ul>
-    </p>
+	<div id="tooltip" class="hidden">
+	  <p><strong>Component</strong></p>
+	  <p id="value"></p>
+	</div>
+
+	<script type="text/javascript" src="js/layouts.js"></script>
 
   </body>
+
 </html>
