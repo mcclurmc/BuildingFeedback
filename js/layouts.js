@@ -27,8 +27,7 @@ function layouts() {
     function do_chord() {
 	console.log(" * do_chord");
 
-	// Hide the tooltip, in case it's still displayed
-	d3.select("#tooltip").classed("hidden", true);
+	hide_tooltip();
 
 	d3.csv("data/components.csv", function(data) {
 	    console.log(" * do_chord inside csv callback");
@@ -79,8 +78,17 @@ function layouts() {
 		.style("stroke", function(d) { return fill(d.index); })
 		.attr("d", d3.svg.arc().innerRadius(innerRadius)
 		      .outerRadius(outerRadius))
-		.on("mouseover", fade(.1))
-		.on("mouseout", fade(1))
+
+	    // tooltips
+		.on("mouseover", function(d,i) {
+		    //show_tooltip(labels[i] + ": " + Math.round(d.value));
+		    fade(.1)(d,i);
+		})
+		.on("mouseout", function(d,i) {
+		    //hide_tooltip();
+		    fade(1)(d,i)
+		})
+
 		.on("click", function() {
 		    console.log("** window.history.pushState()");
 		    window.history.pushState({page: 2}, "Component");
@@ -129,7 +137,7 @@ function layouts() {
     // Returns an event handler for fading a given chord group.
     function fade(opacity) {
 	return function(g, i) {
-            svg.selectAll(".chord path")
+	    svg.selectAll(".chord path")
 		.filter(function(d) { return d.source.index != i && d.target.index != i; })
 		.transition()
 		.style("opacity", opacity);
@@ -148,6 +156,8 @@ function layouts() {
     }
 
     function do_component() {
+	hide_tooltip();
+
 	var radius = Math.min(width, height) / 2 - 150;
 	var color = d3.scale.category20c();
 
@@ -191,34 +201,12 @@ function layouts() {
 		    do_chord();
 		})
 
-	    	// tooltips
+	    // tooltips
 		.on("mouseover", function(d) {
-
-		    //Get this bar's x/y values, then augment for the tooltip
-		    // var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
-		    // var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
-		    var xPosition = 150;
-		    var yPosition = 150;
-
 		    var value = Math.round(d.value * 10) / 10;
-
-		    //Update the tooltip position and value
-		    d3.select("#tooltip")
-			.style("left", xPosition + "px")
-			.style("top", yPosition + "px")
-			.select("#value")
-			.text(d.name + ": " + value);
-
-		    //Show the tooltip
-		    d3.select("#tooltip").classed("hidden", false);
-
+		    show_tooltip(d.name + ": " + value);
 		})
-		.on("mouseout", function() {
-
-		    //Hide the tooltip
-		    d3.select("#tooltip").classed("hidden", true);
-
-		})
+		.on("mouseout", function() { hide_tooltip(); })
 
 		.attr("display", function(d) {
 		    return d.depth ? null : "none"; }) // hide inner ring
@@ -227,8 +215,8 @@ function layouts() {
 		.style("fill", function(d) {
 		    return color((d.children ? d : d.parent).name); })
 		.style("fill-rule", "evenodd")
-		// .append("title")
-		// .text(function(d) { return d.name; })
+	    // .append("title")
+	    // .text(function(d) { return d.name; })
 		.each(stash);
 
 	    d3.selectAll("input").on("change", function change() {
@@ -264,6 +252,28 @@ function layouts() {
 	d3.select(self.frameElement).style("height", height + "px");
     }
 
+    function hide_tooltip() {
+	// Hide the tooltip, in case it's still displayed
+	d3.select("#tooltip").classed("hidden", true);
+    }
+
+    function show_tooltip(t) {
+	// Get location -- needs updating!
+	// var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
+	// var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
+	var xPosition = 150;
+	var yPosition = 150;
+
+	//Update the tooltip position and value
+	d3.select("#tooltip")
+	    .style("left", xPosition + "px")
+	    .style("top", yPosition + "px")
+	    .select("#value")
+	    .text(t);
+
+	//Show the tooltip
+	d3.select("#tooltip").classed("hidden", false);
+    }
 }
 
 var l = new layouts();
