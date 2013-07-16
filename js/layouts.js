@@ -11,13 +11,13 @@ function layouts() {
     function init() {
 	// Event handlers
 	window.addEventListener("popstate", function(event) {
-	    console.log("** window.onpopstate event handler called: state is " + currentState);
-	    if (currentState != "chord") {
+	    console.log("** window.onpopstate event handler called: state is " + this.currentState);
+	    if (this.currentState != "chord") {
 		console.log("*** switching layout");
 		do_chord();
 	    }
 	});
-	console.log("** setting window.onpopstate event handler: state is " + layouts.current);
+	console.log("** setting window.onpopstate event handler: state is " + this.currentState);
 
 	// Initial layout
 	do_chord();
@@ -26,6 +26,9 @@ function layouts() {
     // Draw the chord diagram after parsing data
     function do_chord() {
 	console.log(" * do_chord");
+
+	// Hide the tooltip, in case it's still displayed
+	d3.select("#tooltip").classed("hidden", true);
 
 	d3.csv("data/components.csv", function(data) {
 	    console.log(" * do_chord inside csv callback");
@@ -187,6 +190,36 @@ function layouts() {
 		    console.log("** window.history.pushState()");
 		    do_chord();
 		})
+
+	    	// tooltips
+		.on("mouseover", function(d) {
+
+		    //Get this bar's x/y values, then augment for the tooltip
+		    // var xPosition = parseFloat(d3.select(this).attr("x")) + xScale.rangeBand() / 2;
+		    // var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
+		    var xPosition = 150;
+		    var yPosition = 150;
+
+		    var value = Math.round(d.value * 10) / 10;
+
+		    //Update the tooltip position and value
+		    d3.select("#tooltip")
+			.style("left", xPosition + "px")
+			.style("top", yPosition + "px")
+			.select("#value")
+			.text(d.name + ": " + value);
+
+		    //Show the tooltip
+		    d3.select("#tooltip").classed("hidden", false);
+
+		})
+		.on("mouseout", function() {
+
+		    //Hide the tooltip
+		    d3.select("#tooltip").classed("hidden", true);
+
+		})
+
 		.attr("display", function(d) {
 		    return d.depth ? null : "none"; }) // hide inner ring
 		.attr("d", arc)
@@ -194,8 +227,8 @@ function layouts() {
 		.style("fill", function(d) {
 		    return color((d.children ? d : d.parent).name); })
 		.style("fill-rule", "evenodd")
-		.append("title")
-		.text(function(d) { return d.name; })
+		// .append("title")
+		// .text(function(d) { return d.name; })
 		.each(stash);
 
 	    d3.selectAll("input").on("change", function change() {
