@@ -5,7 +5,6 @@ _Work remaining_
 * TODO Chord diagram has labels on either side
 * TODO Sunburst has nicer tooltips
 * TODO Chord has tooltips with number of complaints
-* TODO Chord switches to sunburst when click component
 * TODO Chord to sunburst has nice transition
 * TODO Script to convert excel data to json for sunburst
 * TODO All components have sunburst graph (manual)
@@ -22,3 +21,4 @@ _Work remaining_
 ** TODO tap
 ** TODO interior doors
 ** TODO data outlet
+* DONE Chord switches to sunburst when click component
