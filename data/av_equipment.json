@@ -1,0 +1,7 @@
+{
+    "name": "A/V equipment",
+    "children":
+    [ { "name": "Projector Quality",
+	"children": [ { "name": "Specification", "size": 9},
+		      { "name": "Component Quality", 9} ] } ]
+}

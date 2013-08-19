@@ -1,0 +1,20 @@
+{ "name" : "walls/ceiling",
+  "children" :
+  [ { "name" : "slab expansion",
+      "children" :
+      [ { "name" : "system design", "size" : 1.3333333333 },
+	{ "name" : "value engineering", "size" : 1.3333333333 },
+	{ "name" : "construction quality", "size" : 1.3333333333 } ] },
+    { "name" : "passivent upstand",
+      "children" :
+      [ { "name" : "construction quality", "size" : 24 } ] },
+    { "name" : "roof membrane leaking",
+      "children" :
+      [ { "name" : "system design", "size" : 12 },
+	{ "name" : "construction quality", "size" : 12 } ] },
+    { "name" : "suite roof slope",
+      "children" :
+      [ { "name" : "construction quality", "size" : 24 } ] },
+    { "name" : "insufficient roof drain",
+      "children" :
+      [ { "name" : "system design", "size" : 24 } ] } ] }

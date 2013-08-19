@@ -1,0 +1,7 @@
+{ "name" : "data outlet",
+  "children" :
+  [ { "name" : "data outlet quality",
+      "children" :
+      [ { "name" : "client brief", "size" : 8.6666666667 },
+	{ "name" : "specification", "size" : 8.6666666667 },
+	{ "name" : "procurement", "size" : 8.6666666667 } ] } ] }

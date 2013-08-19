@@ -3,6 +3,9 @@ function layouts() {
     this.init = init;
     this.do_chord = do_chord;
     this.do_component = do_component;
+    //this.component_labels = [];
+
+    var component_labels = [];
 
     var width = 1200;
     var height = 900;
@@ -11,16 +14,31 @@ function layouts() {
     function init() {
 	// Event handlers
 	window.addEventListener("popstate", function(event) {
-	    console.log("** window.onpopstate event handler called: state is " + this.currentState);
+	    console.log("** window.onpopstate event handler called: state is " +
+			this.currentState);
 	    if (this.currentState != "chord") {
 		console.log("*** switching layout");
 		do_chord();
 	    }
 	});
-	console.log("** setting window.onpopstate event handler: state is " + this.currentState);
+	console.log("** setting window.onpopstate event handler: state is " +
+		    this.currentState);
 
 	// Initial layout
 	do_chord();
+    }
+
+    function component_index_to_filename(labels, i) {
+	if (i >= labels.length / 2) {
+	    return { "none" : true };
+	} else {
+            var label = labels[i];
+            var filename =
+		"data/" +
+		label.toLowerCase().replace(" ", "_").replace("/", "_") +
+		".json";
+            return { "some" : filename };
+	}
     }
 
     // Draw the chord diagram after parsing data
@@ -32,13 +50,16 @@ function layouts() {
 	d3.csv("data/components.csv", function(data) {
 	    console.log(" * do_chord inside csv callback");
 	    var component_matrix = []
-	    var labels = []
+	    //var component_labels = []
+	    //this.component_labels = []
+	    component_labels = []
 
 	    currentState = "chord";
 
 	    // extract labels from csv
 	    for (var l in data[0]) {
-		labels.push(l);
+		//this.component_labels.push(l);
+		component_labels.push(l);
 	    }
 
 	    // parse component matrix
@@ -79,7 +100,7 @@ function layouts() {
 		.attr("d", d3.svg.arc().innerRadius(innerRadius)
 		      .outerRadius(outerRadius))
 
-	    // tooltips
+	        // tooltips
 		.on("mouseover", function(d,i) {
 		    //show_tooltip(labels[i] + ": " + Math.round(d.value));
 		    fade(.1)(d,i);
@@ -89,16 +110,22 @@ function layouts() {
 		    fade(1)(d,i)
 		})
 
-		.on("click", function() {
+		.on("click", function(d) {
 		    console.log("** window.history.pushState()");
 		    window.history.pushState({page: 2}, "Component");
-		    do_component();
+		    console.log("** d.index: " + d.index);
+		    var filename = component_index_to_filename(component_labels, d.index);
+		    console.log("** filename: " + filename.some);
+		    if (filename.some) {
+			do_component(filename.some);
+		    }
 		});
 
 	    var ticks = svg.append("g").selectAll("g")
 		.data(chord.groups)
 		.enter().append("g").selectAll("g")
-		.data(groupTicks(labels))
+		//.data(groupTicks(this.component_labels))
+		.data(groupTicks(component_labels))
 		.enter().append("g")
 		.attr("transform", function(d) {
 		    return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
@@ -155,7 +182,7 @@ function layouts() {
 	};
     }
 
-    function do_component() {
+    function do_component(filename) {
 	hide_tooltip();
 
 	var radius = Math.min(width, height) / 2 - 150;
@@ -182,7 +209,10 @@ function layouts() {
 	    .innerRadius(function(d) { return Math.sqrt(d.y); })
 	    .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-	d3.json("data/components.json", function(error, root) {
+	//var filename = "data/" + cname + ".json";
+
+	//d3.json("data/chilled_beams.json", function(error, root) {
+	d3.json(filename, function(error, root) {
 	    // Show name in middle of sunburst. We could make this look better.
 	    svg.append("text")
 		.attr("text-anchor", "middle")
@@ -279,3 +309,8 @@ function layouts() {
 var l = new layouts();
 
 l.init();
+
+
+/* Local Variables: */
+/* indent-tabs-mode: nil */
+/* End: */

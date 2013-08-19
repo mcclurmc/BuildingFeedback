@@ -1,0 +1,15 @@
+{
+    "name" : "electrical socket",
+    "children" :
+    [ { "name" : "socket installation",
+	"children" :
+	[ { "name" : "construction quality", "size" : 28 } ] },
+      { "name" : "insufficient sockets",
+	"children" :
+	[ { "name" : "client brief", "size" : 2 },
+	  { "name" : "client decision", "size" : 2 } ] },
+      { "name" : "socket fixing",
+	"children" :
+	[ { "name" : "specification", "size" : 2.5 },
+	  { "name" : "construction quality", "size" : 2.5 } ] } ]
+}

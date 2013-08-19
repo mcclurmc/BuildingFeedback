@@ -20,7 +20,7 @@ var arc = d3.svg.arc()
     .innerRadius(function(d) { return Math.sqrt(d.y); })
     .outerRadius(function(d) { return Math.sqrt(d.y + d.dy); });
 
-d3.json("data/components.json", function(error, root) {
+d3.json("data/chilled_beams.json", function(error, root) {
     // Show name in middle of sunburst. We could make this look better.
     svg.append("text")
 	.attr("text-anchor", "middle")

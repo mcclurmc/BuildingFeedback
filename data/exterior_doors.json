@@ -1,0 +1,18 @@
+{
+    "name" : "exterior doors",
+    "children" :
+    [ { "name" : "exterior door quality",
+	"children" :
+	[ { "name" : "client brief", "size" : 11.3333333333 },
+	  { "name" : "specification ", "size" : 11.3333333333 },
+	  { "name" : "procurement", "size" : 11.3333333333 } ] },
+      { "name" : "door handle quality",
+	"children" :
+	[ { "name" : "client brief", "size" : 15 },
+	  { "name" : "specification ", "size" : 15 } ] },
+      { "name" : "mag lock exterior quality",
+	"children" :
+	[ { "name" : "client brief", "size" : 2.6666666667 },
+	  { "name" : "specification", "size" : 2.6666666667 },
+	  { "name" : "component failure", "size" : 2.6666666667 } ] } ]
+}

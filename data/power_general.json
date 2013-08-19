@@ -1,0 +1,6 @@
+{ "name" : "power general",
+  "children" :
+  [ { "name" : "board labeling",
+      "children" :
+      [ { "name" : "commissioning", "size" : 2 },
+	{ "name" : "documentation", "size" : 2 } ] } ] }
