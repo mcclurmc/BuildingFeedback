@@ -1,0 +1,29 @@
+{ "name" : "lighting hardware",
+  "children" :
+  [ { "name" : "lamp premature burn",
+      "children" :
+      [ { "name" : "construction quality", "size" : 23 } ] },
+    { "name" : "emergency lighting programming",
+      "children" :
+      [ { "name" : "component failure", "size" : 23 } ] },
+    { "name" : "emergency lighting labeling",
+      "children" :
+      [ { "name" : "construction quality", "size" : 7.6666666667 },
+	{ "name" : "commissioning", "size" : 7.6666666667 },
+	{ "name" : "documentation", "size" : 7.6666666667 } ] },
+    { "name" : "emergency lighting reporting program",
+      "children" :
+      [ { "name" : "construction quality", "size" : 18.5 },
+	{ "name" : "commissioning", "size" : 18.5 } ] },
+    { "name" : "emergency documentation",
+      "children" :
+      [ { "name" : "client brief", "size" : 5.75 },
+	{ "name" : "specification ", "size" : 5.75 },
+	{ "name" : "system design", "size" : 5.75 },
+	{ "name" : "training", "size" : 5.75 } ] },
+    { "name" : "early lamp replacement",
+      "children" :
+      [ { "name" : "construction quality", "size" : 7.6666666667 },
+	{ "name" : "commissioning", "size" : 7.6666666667 },
+	{ "name" : "component failure", "size" : 7.6666666667 } ] } ] }
+

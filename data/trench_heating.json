@@ -1,0 +1,21 @@
+{ "name" : "trench heating",
+  "children" :
+  [ { "name" : "heating valve fault",
+      "children" :
+      [ { "name" : "commissioning", "size" : 16.5 },
+	{ "name" : "component faulure", "size" : 16.5 } ] },
+    { "name" : "unrealistic expectations heating",
+      "children" :
+      [ { "name" : "client brief", "size" : 11 },
+	{ "name" : "training", "size" : 11 },
+	{ "name" : "client decision", "size" : 11 } ] },
+    { "name" : "furniture block",
+      "children" :
+      [ { "name" : "client brief", "size" : 11 },
+	{ "name" : "system design", "size" : 11 },
+	{ "name" : "training", "size" : 11 } ] },
+    { "name" : "users and controls",
+      "children" :
+      [ { "name" : "client brief", "size" : 11 },
+	{ "name" : "system design", "size" : 11 },
+	{ "name" : "training", "size" : 11 } ] } ] }

@@ -1,0 +1,7 @@
+{ "name" : "lift",
+  "children" :
+  [ { "name" : "lift brand",
+      "children" :
+      [ { "name" : "client brief", "size" : 6.3333333333 },
+	{ "name" : "specification", "size" : 6.3333333333 },
+	{ "name" : "component failure", "size" : 6.3333333333 } ] } ] }

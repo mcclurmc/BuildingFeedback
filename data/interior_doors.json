@@ -1,0 +1,17 @@
+{ "name" : "interior door",
+  "children" :
+  [ { "name" : "mag quality interior",
+      "children" :
+      [ { "name" : "client brief", "size" : 3.3333333333 },
+	{ "name" : "specification ", "size" : 3.3333333333 },
+	{ "name" : "component failure", "size" : 3.3333333333 } ] },
+    { "name" : "bowing door frames",
+      "children" :
+      [ { "name" : "system design", "size" : 5.3333333333 },
+	{ "name" : "value engineering", "size" : 5.3333333333 },
+	{ "name" : "construction quality", "size" : 5.3333333333 } ] },
+    { "name" : "interior handle quality",
+      "children" :
+      [ { "name" : "client brief", "size" : 22 },
+	{ "name" : "specification ", "size" : 22 } ] } ] }
+

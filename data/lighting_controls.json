@@ -1,0 +1,16 @@
+{ "name" : "lighting controls",
+  "children" :
+  [ { "name" : "open lighting mismanagement",
+      "children" :
+      [ { "name" : "client brief", "size" : 9.5 },
+	{ "name" : "system design", "size" : 9.5 },
+	{ "name" : "training", "size" : 9.5 },
+	{ "name" : "client decision", "size" : 9.5 } ] },
+    { "name" : "lighting controls override",
+      "children" :
+      [ { "name" : "client brief", "size" : 19 },
+	{ "name" : "system design", "size" : 19 } ] },
+    { "name" : "lighting controls programming",
+      "children" :
+      [ { "name" : "construction quality", "size" : 18.5 },
+	{ "name" : "commissioning", "size" : 18.5 } ] } ] }

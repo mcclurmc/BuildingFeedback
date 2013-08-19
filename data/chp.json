@@ -1,0 +1,12 @@
+{
+    "name" : "CHP",
+    "children" :
+    [ { "name" : "CHP Flue",
+	"children" :
+	[ { "name" : "construction quality", "size" : 2 } ] },
+      { "name" : "CHP sizing",
+	"children" :
+	[ { "name" : "client brief", "size" : 0.6666666667 },
+	  { "name" : "system design", "size" : 0.6666666667 },
+	  { "name" : "commissioning", "size" : 0.6666666667 } ] } ]
+}

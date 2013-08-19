@@ -1,0 +1,15 @@
+{ "name" : "window",
+  "children" :
+  [ { "name" : "domestic window actuators",
+      "children" :
+      [ { "name" : "specification", "size" : 4.3333333333 },
+	{ "name" : "system design", "size" : 4.3333333333 },
+	{ "name" : "procurement", "size" : 4.3333333333 } ] },
+    { "name" : "window mastic",
+      "children" :
+      [ { "name" : "construction quality", "size" : 4 } ] },
+    { "name" : "window installer bankrupt",
+      "children" :
+      [ { "name" : "specification", "size" : 4.3333333333 },
+	{ "name" : "construction quality", "size" : 4.3333333333 },
+	{ "name" : "commissioning", "size" : 4.3333333333 } ] } ] }

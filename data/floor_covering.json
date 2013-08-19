@@ -1,0 +1,6 @@
+{ "name" : "floor covering",
+  "children" :
+  [ { "name" : "floor robustness",
+      "children" :
+      [ { "name" : "specification", "size" : 2.5 },
+	{ "name" : "construction quality", "size" : 2.5 } ] } ] }
